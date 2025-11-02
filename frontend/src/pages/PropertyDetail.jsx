@@ -9,7 +9,7 @@ import FavoriteButton from '../components/FavoriteButton';
 import PropertyCard from '../components/PropertyCard';
 import SEOHead from '../components/SEOHead';
 import toast from 'react-hot-toast';
-import { MapPin, DollarSign, Bed, Bath, Maximize, User, Mail, Phone, MessageSquare, Loader, Eye, Calendar } from 'lucide-react';
+import { MapPin, IndianRupee, Bed, Bath, Maximize, User, Mail, Phone, MessageSquare, Loader, Eye, Calendar } from 'lucide-react';
 
 const PropertyDetail = () => {
   const { id } = useParams();
@@ -95,16 +95,16 @@ const PropertyDetail = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader className="w-12 h-12 text-primary-600 animate-spin" />
+      <div className="flex justify-center items-center h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <Loader className="w-12 h-12 text-primary-500 animate-spin" />
       </div>
     );
   }
 
   if (!property) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-gray-500 text-lg">Property not found</p>
+      <div className="flex justify-center items-center h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <p className="text-gray-500 dark:text-gray-400 text-lg">Property not found</p>
       </div>
     );
   }
@@ -115,7 +115,7 @@ const PropertyDetail = () => {
   const isSeller = user?.role === 'seller';
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 py-8">
       <SEOHead
         title={`${property.title} - ${property.location} | HomeSphere View`}
         description={property.description}
@@ -124,7 +124,7 @@ const PropertyDetail = () => {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Image/3D Viewer */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6 relative">
+        <div className="card overflow-hidden mb-6 relative">
           {/* Favorite Button */}
           <div className="absolute top-4 right-4 z-10">
             <FavoriteButton propertyId={property._id} size="large" />
@@ -171,50 +171,50 @@ const PropertyDetail = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Property Details */}
-          <div className="lg:col-span-2 bg-white rounded-lg shadow-md p-6">
+          <div className="lg:col-span-2 card p-6">
             <div className="mb-4">
-              <span className="inline-block bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-sm font-medium capitalize">
+              <span className="inline-block bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 px-3 py-1 rounded-full text-sm font-medium capitalize">
                 {property.propertyType}
               </span>
             </div>
 
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">{property.title}</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">{property.title}</h1>
 
-            <div className="flex items-center text-gray-600 mb-6">
+            <div className="flex items-center text-gray-600 dark:text-gray-400 mb-6">
               <MapPin className="w-5 h-5 mr-2" />
               <span className="text-lg">{property.location}</span>
             </div>
 
-            <div className="flex items-center text-primary-600 font-bold text-4xl mb-6">
-              <DollarSign className="w-8 h-8" />
-              <span>{property.price.toLocaleString()}</span>
+            <div className="flex items-center text-primary-600 dark:text-primary-400 font-bold text-4xl mb-6">
+              <IndianRupee className="w-8 h-8" />
+              <span>{new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(property.price)}</span>
             </div>
 
             {/* Property Features */}
-            <div className="grid grid-cols-3 gap-4 mb-6 pb-6 border-b">
+            <div className="grid grid-cols-3 gap-4 mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
               {property.bedrooms > 0 && (
                 <div className="flex items-center space-x-2">
-                  <Bed className="w-6 h-6 text-gray-600" />
+                  <Bed className="w-6 h-6 text-gray-600 dark:text-gray-400" />
                   <div>
-                    <p className="text-sm text-gray-500">Bedrooms</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Bedrooms</p>
                     <p className="font-semibold">{property.bedrooms}</p>
                   </div>
                 </div>
               )}
               {property.bathrooms > 0 && (
                 <div className="flex items-center space-x-2">
-                  <Bath className="w-6 h-6 text-gray-600" />
+                  <Bath className="w-6 h-6 text-gray-600 dark:text-gray-400" />
                   <div>
-                    <p className="text-sm text-gray-500">Bathrooms</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Bathrooms</p>
                     <p className="font-semibold">{property.bathrooms}</p>
                   </div>
                 </div>
               )}
               {property.area > 0 && (
                 <div className="flex items-center space-x-2">
-                  <Maximize className="w-6 h-6 text-gray-600" />
+                  <Maximize className="w-6 h-6 text-gray-600 dark:text-gray-400" />
                   <div>
-                    <p className="text-sm text-gray-500">Area</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Area</p>
                     <p className="font-semibold">{property.area} sqft</p>
                   </div>
                 </div>
@@ -223,28 +223,28 @@ const PropertyDetail = () => {
 
             {/* Description */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Description</h2>
-              <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Description</h2>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-line">
                 {property.description}
               </p>
             </div>
 
             {/* Stats */}
-            <div className="mt-6 pt-6 border-t flex items-center space-x-6 text-sm text-gray-600">
+            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 flex items-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
               <div className="flex items-center space-x-2">
                 <Eye className="w-4 h-4" />
                 <span>{property.views} views</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Calendar className="w-4 h-4" />
-                <span>Listed {new Date(property.createdAt).toLocaleDateString()}</span>
+                <span>Listed {new Date(property.createdAt).toLocaleDateString('en-IN')}</span>
               </div>
             </div>
 
             {/* Map */}
             {(property.latitude && property.longitude) && (
-              <div className="mt-6 pt-6 border-t">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Location</h2>
+              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Location</h2>
                 <MapView
                   latitude={property.latitude}
                   longitude={property.longitude}
@@ -255,16 +255,16 @@ const PropertyDetail = () => {
             )}
 
             {/* Owner Info */}
-            <div className="mt-6 pt-6 border-t">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Listed by</h3>
+            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Listed by</h3>
               <div className="flex items-center space-x-2">
-                <User className="w-5 h-5 text-gray-600" />
-                <span className="text-gray-700">{property.owner.name}</span>
+                <User className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                <span className="text-gray-700 dark:text-gray-300">{property.owner.name}</span>
               </div>
               {property.owner.phone && (
                 <div className="flex items-center space-x-2 mt-2">
-                  <Phone className="w-5 h-5 text-gray-600" />
-                  <span className="text-gray-700">{property.owner.phone}</span>
+                  <Phone className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  <span className="text-gray-700 dark:text-gray-300">{property.owner.phone}</span>
                 </div>
               )}
             </div>
@@ -272,12 +272,12 @@ const PropertyDetail = () => {
 
           {/* Inquiry Form + Contact */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-4 sticky top-24">
-              <h2 className="text-xl font-bold text-gray-900 mb-3">{isOwner ? 'Your Property' : 'Interested?'}</h2>
+            <div className="card p-4 sticky top-24">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3">{isOwner ? 'Your Property' : 'Interested?'}</h2>
 
               {isOwner ? (
-                <div className="bg-primary-50 border border-primary-200 rounded-lg p-3">
-                  <p className="text-primary-700 text-center font-medium">This is your property listing</p>
+                <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-900/30 rounded-lg p-3">
+                  <p className="text-primary-700 dark:text-primary-300 text-center font-medium">This is your property listing</p>
                 </div>
               ) : (!isSeller && !showInquiryForm) ? (
                 <button
@@ -290,7 +290,7 @@ const PropertyDetail = () => {
               ) : (!isSeller && (
                 <form onSubmit={handleInquirySubmit} className="space-y-3 text-sm">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Your Name</label>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Your Name</label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                       <input
@@ -299,14 +299,14 @@ const PropertyDetail = () => {
                         required
                         value={inquiryData.name}
                         onChange={handleInquiryChange}
-                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors duration-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400"
                         placeholder="John Doe"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Email</label>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                       <input
@@ -315,14 +315,14 @@ const PropertyDetail = () => {
                         required
                         value={inquiryData.email}
                         onChange={handleInquiryChange}
-                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors duration-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400"
                         placeholder="you@example.com"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Phone (Optional)</label>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Phone (Optional)</label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                       <input
@@ -330,21 +330,21 @@ const PropertyDetail = () => {
                         name="phone"
                         value={inquiryData.phone}
                         onChange={handleInquiryChange}
-                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors duration-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400"
                         placeholder="+1 234 567 8900"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Message</label>
+                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Message</label>
                     <textarea
                       name="message"
                       required
                       value={inquiryData.message}
                       onChange={handleInquiryChange}
                       rows="3"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors duration-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400"
                       placeholder="I'm interested in this property..."
                     />
                   </div>
@@ -362,18 +362,18 @@ const PropertyDetail = () => {
 
               {/* Quick contact options for buyers */}
               {!isOwner && !isSeller && (
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Contact Seller</h3>
+                <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Contact Seller</h3>
                   <div className="grid grid-cols-1 gap-2">
                     {property.owner.phone && (
-                      <a href={`tel:${property.owner.phone}`} className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 transition">
+                      <a href={`tel:${property.owner.phone}`} className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-100 transition-colors">
                         <Phone className="w-4 h-4" /> Call Seller
                       </a>
                     )}
                     {property.owner.email && (
                       <a
                         href={`mailto:${property.owner.email}?subject=${encodeURIComponent('Inquiry about ' + property.title)}&body=${encodeURIComponent('Hi, I am interested in your property: ' + property.title + ' at ' + property.location + '.')}`}
-                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 transition"
+                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-100 transition-colors"
                       >
                         <Mail className="w-4 h-4" /> Email Seller
                       </a>
@@ -383,7 +383,7 @@ const PropertyDetail = () => {
                         href={`https://wa.me/${String(property.owner.phone).replace(/[^\d]/g, '')}?text=${encodeURIComponent('Hi! I am interested in your property: ' + property.title + ' in ' + property.location + '. Is it available for a visit?')}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-green-500/10 hover:bg-green-500/20 text-green-700 transition"
+                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-green-500/10 hover:bg-green-500/20 text-green-700 dark:text-green-300 transition-colors"
                       >
                         <MessageSquare className="w-4 h-4" /> WhatsApp
                       </a>
@@ -398,7 +398,7 @@ const PropertyDetail = () => {
         {/* Similar Properties */}
         {similarProperties.length > 0 && (
           <div className="mt-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Similar Properties</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">Similar Properties</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {similarProperties.map((prop) => (
                 <PropertyCard key={prop._id} property={prop} />

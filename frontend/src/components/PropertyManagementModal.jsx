@@ -135,29 +135,29 @@ const PropertyManagementModal = ({ property, isOpen, onClose, onUpdate }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-900 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex justify-between items-center p-6 border-b sticky top-0 bg-white z-10">
+        <div className="flex justify-between items-center p-6 border-b dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-900 z-10">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">{property.title}</h2>
-            <p className="text-gray-600">{property.location}</p>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{property.title}</h2>
+            <p className="text-gray-600 dark:text-gray-400">{property.location}</p>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
           >
             <X className="w-6 h-6" />
           </button>
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b px-6">
+        <div className="flex border-b dark:border-gray-700 px-6">
           <button
             onClick={() => setActiveTab('details')}
             className={`px-4 py-3 font-medium transition ${
               activeTab === 'details'
                 ? 'text-primary-600 border-b-2 border-primary-600'
-                : 'text-gray-600 hover:text-gray-800'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
             }`}
           >
             Details
@@ -167,7 +167,7 @@ const PropertyManagementModal = ({ property, isOpen, onClose, onUpdate }) => {
             className={`px-4 py-3 font-medium transition relative ${
               activeTab === 'inquiries'
                 ? 'text-primary-600 border-b-2 border-primary-600'
-                : 'text-gray-600 hover:text-gray-800'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
             }`}
           >
             <Users className="w-4 h-4 inline mr-1" />
@@ -186,7 +186,7 @@ const PropertyManagementModal = ({ property, isOpen, onClose, onUpdate }) => {
             className={`px-4 py-3 font-medium transition ${
               activeTab === 'edit'
                 ? 'text-primary-600 border-b-2 border-primary-600'
-                : 'text-gray-600 hover:text-gray-800'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
             }`}
           >
             <Edit2 className="w-4 h-4 inline mr-1" />
@@ -210,28 +210,28 @@ const PropertyManagementModal = ({ property, isOpen, onClose, onUpdate }) => {
 
               {/* Property Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600">Price</p>
+                <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Price</p>
                   <p className="text-xl font-bold text-primary-600">${property.price.toLocaleString()}</p>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600">Bedrooms</p>
+                <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Bedrooms</p>
                   <p className="text-xl font-bold">{property.bedrooms || 'N/A'}</p>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600">Bathrooms</p>
+                <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Bathrooms</p>
                   <p className="text-xl font-bold">{property.bathrooms || 'N/A'}</p>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600">Area</p>
+                <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Area</p>
                   <p className="text-xl font-bold">{property.area || 'N/A'} sqft</p>
                 </div>
               </div>
 
               {/* Description */}
               <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-2">Description</h3>
-                <p className="text-gray-600 leading-relaxed whitespace-pre-line">{property.description}</p>
+                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">Description</h3>
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed whitespace-pre-line">{property.description}</p>
               </div>
 
               {/* Status Badge */}
@@ -252,7 +252,7 @@ const PropertyManagementModal = ({ property, isOpen, onClose, onUpdate }) => {
           {/* Inquiries Tab */}
           {activeTab === 'inquiries' && (
             <div>
-              <h3 className="text-lg font-semibold mb-4">People Interested in This Property</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">People Interested in This Property</h3>
               {loadingInquiries ? (
                 <div className="flex justify-center py-8">
                   <Loader className="w-8 h-8 text-primary-600 animate-spin" />
@@ -260,30 +260,30 @@ const PropertyManagementModal = ({ property, isOpen, onClose, onUpdate }) => {
               ) : inquiries.length > 0 ? (
                 <div className="space-y-4">
                   {inquiries.map((inquiry) => (
-                    <div key={inquiry._id} className="border rounded-lg p-4 bg-gray-50">
+                    <div key={inquiry._id} className="border dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
                       <div className="flex justify-between items-start mb-3">
                         <div>
-                          <h4 className="font-semibold text-lg">{inquiry.name}</h4>
-                          <p className="text-sm text-gray-600">{inquiry.email}</p>
+                          <h4 className="font-semibold text-lg text-gray-900 dark:text-gray-100">{inquiry.name}</h4>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{inquiry.email}</p>
                           {inquiry.phone && (
-                            <p className="text-sm text-gray-600">{inquiry.phone}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">{inquiry.phone}</p>
                           )}
                         </div>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
                           {new Date(inquiry.createdAt).toLocaleDateString()}
                         </span>
                       </div>
-                      <div className="bg-white p-3 rounded border">
-                        <p className="text-sm font-medium text-gray-700 mb-1">Message:</p>
-                        <p className="text-gray-600">{inquiry.message}</p>
+                      <div className="bg-white dark:bg-gray-900 p-3 rounded border dark:border-gray-700">
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Message:</p>
+                        <p className="text-gray-600 dark:text-gray-400">{inquiry.message}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-12 bg-gray-50 rounded-lg">
+                <div className="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-lg">
                   <Users className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-gray-500">No inquiries yet for this property</p>
+                  <p className="text-gray-500 dark:text-gray-400">No inquiries yet for this property</p>
                 </div>
               )}
             </div>
@@ -293,7 +293,7 @@ const PropertyManagementModal = ({ property, isOpen, onClose, onUpdate }) => {
           {activeTab === 'edit' && (
             <form className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
                 <input
                   type="text"
                   name="title"
@@ -304,7 +304,7 @@ const PropertyManagementModal = ({ property, isOpen, onClose, onUpdate }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
                 <textarea
                   name="description"
                   value={editData.description}
@@ -316,7 +316,7 @@ const PropertyManagementModal = ({ property, isOpen, onClose, onUpdate }) => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Price ($)</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Price ($)</label>
                   <input
                     type="number"
                     name="price"
@@ -327,7 +327,7 @@ const PropertyManagementModal = ({ property, isOpen, onClose, onUpdate }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Location</label>
                   <input
                     type="text"
                     name="location"
@@ -340,7 +340,7 @@ const PropertyManagementModal = ({ property, isOpen, onClose, onUpdate }) => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bedrooms</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bedrooms</label>
                   <input
                     type="number"
                     name="bedrooms"
@@ -351,7 +351,7 @@ const PropertyManagementModal = ({ property, isOpen, onClose, onUpdate }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bathrooms</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bathrooms</label>
                   <input
                     type="number"
                     name="bathrooms"
@@ -362,7 +362,7 @@ const PropertyManagementModal = ({ property, isOpen, onClose, onUpdate }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Area (sqft)</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Area (sqft)</label>
                   <input
                     type="number"
                     name="area"
@@ -375,11 +375,11 @@ const PropertyManagementModal = ({ property, isOpen, onClose, onUpdate }) => {
 
               {/* Image Management */}
               <div className="border-t pt-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Images</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Images</h3>
                 
                 {/* Existing Images */}
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Current Images</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Current Images</label>
                   <div className="grid grid-cols-3 gap-3">
                     {property.images?.filter(img => !imagesToDelete.includes(img)).map((image, idx) => (
                       <div key={idx} className="relative group">
@@ -399,7 +399,7 @@ const PropertyManagementModal = ({ property, isOpen, onClose, onUpdate }) => {
                 {/* New Images to Upload */}
                 {newImages.length > 0 && (
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">New Images (will be uploaded)</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">New Images (will be uploaded)</label>
                     <div className="grid grid-cols-3 gap-3">
                       {newImages.map((img, idx) => (
                         <div key={idx} className="relative group">
@@ -433,14 +433,14 @@ const PropertyManagementModal = ({ property, isOpen, onClose, onUpdate }) => {
 
               {/* Model Management */}
               <div className="border-t pt-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">3D Model</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">3D Model</h3>
                 
                 {/* Current Model */}
                 {property.modelUrl && !deleteModel && !newModel && (
-                  <div className="mb-4 bg-gray-50 p-3 rounded flex justify-between items-center">
+                  <div className="mb-4 bg-gray-50 dark:bg-gray-800 p-3 rounded flex justify-between items-center">
                     <div>
                       <p className="text-sm font-medium">Current Model</p>
-                      <p className="text-xs text-gray-500 truncate max-w-xs">{property.modelUrl}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-xs">{property.modelUrl}</p>
                     </div>
                     <button
                       type="button"

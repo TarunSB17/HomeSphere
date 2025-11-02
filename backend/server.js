@@ -15,6 +15,7 @@ import propertyRoutes from './routes/propertyRoutes.js';
 import inquiryRoutes from './routes/inquiryRoutes.js';
 import favoriteRoutes from './routes/favoriteRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+ 
 
 // Load env vars
 dotenv.config();
@@ -67,6 +68,7 @@ app.use('/api/properties', propertyRoutes);
 app.use('/api/inquiry', inquiryRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/admin', adminRoutes);
+ 
 
 // Error handling middleware
 app.use(notFound);

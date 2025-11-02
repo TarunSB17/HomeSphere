@@ -1,20 +1,31 @@
 import { motion } from 'framer-motion';
-import { MapPin, Bed, Bath, Maximize, Box } from 'lucide-react';
+import { MapPin, Bed, Bath, Maximize, Box, Trash2, Edit2 } from 'lucide-react';
 import { useState } from 'react';
 import FavoriteButton from './FavoriteButton';
 
-const PropertyCard = ({ property, onViewDetails }) => {
+const PropertyCard = ({ property, onViewDetails, onView3D, onDelete, onEdit }) => {
   const [isHovered, setIsHovered] = useState(false);
   // Favorite state handled by FavoriteButton component
 
   const formatPrice = (price) => {
-    if (price >= 1000000) {
-      return `$${(price / 1000000).toFixed(1)}M`;
-    } else if (price >= 1000) {
-      return `$${(price / 1000).toFixed(0)}K`;
+    try {
+      return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(price || 0);
+    } catch {
+      return `₹${(price || 0).toLocaleString('en-IN')}`;
     }
-    return `$${price.toLocaleString()}`;
   };
+
+  const fallbackByType = {
+    villa: 'https://images.unsplash.com/photo-1613977257593-9c0120ff9d2f?w=1200&h=800&fit=crop',
+    apartment: 'https://images.unsplash.com/photo-1494526585095-c41746248156?w=1200&h=800&fit=crop',
+    condo: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&h=800&fit=crop',
+    commercial: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=800&fit=crop',
+    land: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200&h=800&fit=crop',
+    house: 'https://images.unsplash.com/photo-1505691723518-36a5ac3b2d53?w=1200&h=800&fit=crop',
+  };
+  const typeKey = (property.propertyType || 'house').toString().toLowerCase();
+  const coverCandidate = (property.images || []).find((u) => typeof u === 'string' && u.length > 4);
+  const cover = coverCandidate || fallbackByType[typeKey] || fallbackByType.house;
 
   return (
     <motion.div
@@ -29,13 +40,16 @@ const PropertyCard = ({ property, onViewDetails }) => {
       {/* Image with Price Badge and Overlay */}
       <div className="relative h-56 overflow-hidden">
         <motion.img
-          src={property.images?.[0] || '/api/placeholder/400/300'}
+          src={cover}
           alt={property.title}
           className="w-full h-full object-cover"
           animate={{
             scale: isHovered ? 1.1 : 1,
           }}
           transition={{ duration: 0.6 }}
+          onError={(e) => {
+            e.currentTarget.src = fallbackByType[typeKey] || fallbackByType.house;
+          }}
         />
 
         {/* Gradient Overlay */}
@@ -103,25 +117,51 @@ const PropertyCard = ({ property, onViewDetails }) => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <motion.button
             onClick={() => onViewDetails(property)}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="flex-1 py-3 px-4 bg-gradient-primary text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300"
+            className="flex-1 sm:flex-none w-full sm:w-auto py-3 px-4 bg-gradient-primary text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300"
           >
             View Details
           </motion.button>
 
           {property.modelUrl && (
             <motion.button
-              onClick={() => onViewDetails(property)}
+              onClick={() => (onView3D ? onView3D(property) : onViewDetails(property))}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="py-3 px-4 bg-accent-500 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+              className="w-full sm:w-auto py-3 px-4 bg-accent-500 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
             >
               <Box className="w-4 h-4" />
               <span className="hidden sm:inline">View 3D</span>
+            </motion.button>
+          )}
+
+          {onEdit && (
+            <motion.button
+              onClick={() => onEdit(property)}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full sm:w-auto py-3 px-4 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-100 rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+              title="Edit property"
+            >
+              <Edit2 className="w-4 h-4" />
+              <span className="hidden sm:inline">Edit</span>
+            </motion.button>
+          )}
+
+          {onDelete && (
+            <motion.button
+              onClick={() => onDelete(property)}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full sm:w-auto py-3 px-4 bg-red-600 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+              title="Delete property"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span className="hidden sm:inline">Delete</span>
             </motion.button>
           )}
         </div>

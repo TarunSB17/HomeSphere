@@ -19,7 +19,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 group">
+          <Link to={user ? "/home" : "/login"} className="flex items-center space-x-2 group">
             <motion.div
               whileHover={{ rotate: 360 }}
               transition={{ duration: 0.6 }}
@@ -38,7 +38,7 @@ const Navbar = () => {
               <>
                 {/* Main nav simplified for sellers */}
                 <Link
-                  to="/"
+                  to="/home"
                   className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
                 >
                   Home
@@ -48,6 +48,12 @@ const Navbar = () => {
                   className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
                 >
                   About
+                </Link>
+                <Link
+                  to="/contact"
+                  className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                >
+                  Contact
                 </Link>
                 <Link
                   to="/properties"

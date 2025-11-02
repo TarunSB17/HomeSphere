@@ -1,4 +1,7 @@
 import Inquiry from '../models/Inquiry.js';
+import Property from '../models/Property.js';
+import User from '../models/User.js';
+import { sendEmail } from '../utils/mailer.js';
 
 // @desc    Create new inquiry
 // @route   POST /api/inquiry
@@ -15,7 +18,31 @@ export const createInquiry = async (req, res) => {
       property: propertyId
     });
 
-    const populatedInquiry = await Inquiry.findById(inquiry._id).populate('property', 'title price');
+    const populatedInquiry = await Inquiry.findById(inquiry._id).populate('property', 'title price owner');
+
+    // Try to notify seller and admin via email (best-effort)
+    try {
+      const prop = await Property.findById(propertyId).populate('owner', 'name email');
+      const adminEmail = process.env.ADMIN_EMAIL;
+      const sellerEmail = prop?.owner?.email;
+      const subject = `New inquiry for: ${prop?.title || 'your property'}`;
+      const html = `
+        <div>
+          <p>You have a new inquiry for <strong>${prop?.title || 'Property'}</strong>.</p>
+          <ul>
+            <li><strong>Name:</strong> ${name}</li>
+            <li><strong>Email:</strong> ${email}</li>
+            ${phone ? `<li><strong>Phone:</strong> ${phone}</li>` : ''}
+          </ul>
+          <p><strong>Message:</strong></p>
+          <p>${message}</p>
+        </div>
+      `;
+      if (sellerEmail) await sendEmail({ to: sellerEmail, subject, html });
+      if (adminEmail) await sendEmail({ to: adminEmail, subject: `[Admin Copy] ${subject}`, html });
+    } catch (mailErr) {
+      console.warn('Inquiry email notification skipped/failed:', mailErr?.message);
+    }
 
     res.status(201).json({
       message: 'Inquiry submitted successfully',

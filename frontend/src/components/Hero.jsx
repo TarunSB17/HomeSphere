@@ -1,8 +1,18 @@
 import { motion } from 'framer-motion';
 import { Search, Home, TrendingUp, Shield } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 const Hero = () => {
+  const [query, setQuery] = useState('');
+  const navigate = useNavigate();
+
+  const goSearch = () => {
+    const q = (query || '').trim();
+    if (q) navigate(`/properties?search=${encodeURIComponent(q)}`);
+    else navigate('/properties');
+  };
+
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-background-light via-primary-50 to-accent-50 dark:from-background-dark dark:via-accent-900 dark:to-primary-900 overflow-hidden">
       {/* Animated Background Elements */}
@@ -80,15 +90,18 @@ const Hero = () => {
                   <input
                     type="text"
                     placeholder="Search location, property type..."
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && goSearch()}
                     className="bg-transparent border-none outline-none w-full text-gray-700 dark:text-gray-200 placeholder-gray-400"
                   />
                 </div>
-                <Link
-                  to="/properties"
+                <button
+                  onClick={goSearch}
                   className="px-8 py-3 bg-gradient-primary text-white rounded-xl font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-center"
                 >
                   Search
-                </Link>
+                </button>
               </div>
             </motion.div>
 

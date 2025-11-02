@@ -114,19 +114,19 @@ const AddProperty = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Add New Property</h1>
+        <div className="card p-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">Add New Property</h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Information */}
             <div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Basic Information</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Basic Information</h2>
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Property Title *
                   </label>
                   <input
@@ -141,7 +141,7 @@ const AddProperty = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Description *
                   </label>
                   <textarea
@@ -157,8 +157,8 @@ const AddProperty = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Price ($) *
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Price (₹) *
                     </label>
                     <input
                       type="number"
@@ -172,7 +172,7 @@ const AddProperty = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Location *
                     </label>
                     <input
@@ -182,7 +182,7 @@ const AddProperty = () => {
                       value={formData.location}
                       onChange={handleChange}
                       className="input-field"
-                      placeholder="New York, USA"
+                      placeholder="Mumbai, India"
                     />
                   </div>
                 </div>
@@ -191,11 +191,11 @@ const AddProperty = () => {
 
             {/* Property Details */}
             <div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Property Details</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Property Details</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Bedrooms
                   </label>
                   <input
@@ -210,7 +210,7 @@ const AddProperty = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Bathrooms
                   </label>
                   <input
@@ -225,7 +225,7 @@ const AddProperty = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Area (sqft)
                   </label>
                   <input
@@ -240,7 +240,7 @@ const AddProperty = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Property Type *
                   </label>
                   <select
@@ -263,9 +263,9 @@ const AddProperty = () => {
 
             {/* Images Upload */}
             <div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Property Images *</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Property Images *</h2>
               
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+              <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-6 transition-colors duration-300">
                 <div className="text-center">
                   <Upload className="mx-auto h-12 w-12 text-gray-400" />
                   <div className="mt-4">
@@ -282,7 +282,7 @@ const AddProperty = () => {
                         className="hidden"
                       />
                     </label>
-                    <p className="mt-1 text-xs text-gray-500">
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                       PNG, JPG, WEBP up to 10MB each
                     </p>
                   </div>
@@ -314,12 +314,12 @@ const AddProperty = () => {
 
             {/* 3D Model Upload */}
             <div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">3D Model (Optional)</h2>
-              <p className="text-sm text-gray-600 mb-3">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">3D Model (Optional)</h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                 Upload a 3D model (.glb or .gltf) to give buyers an immersive property tour
               </p>
               
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+              <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-6 transition-colors duration-300">
                 <div className="text-center">
                   <Upload className="mx-auto h-12 w-12 text-gray-400" />
                   <div className="mt-4">
@@ -335,21 +335,21 @@ const AddProperty = () => {
                         className="hidden"
                       />
                     </label>
-                    <p className="mt-1 text-xs text-gray-500">
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                       GLB or GLTF format, up to 50MB. Files stored locally, URL saved to database.
                     </p>
                   </div>
 
                   {modelName && (
-                    <div className="mt-4 inline-flex items-center px-4 py-2 bg-primary-50 rounded-lg">
-                      <span className="text-sm text-primary-700">{modelName}</span>
+                    <div className="mt-4 inline-flex items-center px-4 py-2 bg-primary-50 dark:bg-primary-900/20 rounded-lg">
+                      <span className="text-sm text-primary-700 dark:text-primary-300">{modelName}</span>
                       <button
                         type="button"
                         onClick={() => {
                           setModel(null);
                           setModelName('');
                         }}
-                        className="ml-2 text-primary-600 hover:text-primary-800"
+                        className="ml-2 text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300"
                       >
                         <X className="w-4 h-4" />
                       </button>

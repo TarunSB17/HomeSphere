@@ -4,12 +4,15 @@ import { Search, TrendingUp } from 'lucide-react';
 import Hero from '../components/Hero';
 import PropertyCard from '../components/PropertyCard';
 import PropertyModal from '../components/PropertyModal';
+import Model3DModal from '../components/Model3DModal';
 import axios from '../utils/axios';
 
 const Landing = () => {
   const [featured, setFeatured] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [is3DOpen, setIs3DOpen] = useState(false);
+  const [modelUrl, setModelUrl] = useState(null);
 
   // Demo properties matching your screenshot
   const demoProperties = [
@@ -91,6 +94,16 @@ const Landing = () => {
     setSelectedProperty(null);
   };
 
+  const handleView3D = (property) => {
+    if (!property?.modelUrl) {
+      setSelectedProperty(property);
+      setIsModalOpen(true);
+      return;
+    }
+    setModelUrl(property.modelUrl);
+    setIs3DOpen(true);
+  };
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -142,7 +155,7 @@ const Landing = () => {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   viewport={{ once: true }}
                 >
-                  <PropertyCard property={p} onViewDetails={handleViewDetails} />
+                  <PropertyCard property={p} onViewDetails={handleViewDetails} onView3D={handleView3D} />
                 </motion.div>
               ))}
             </motion.div>
@@ -173,6 +186,12 @@ const Landing = () => {
         property={selectedProperty}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
+      />
+
+      <Model3DModal
+        modelUrl={modelUrl}
+        isOpen={is3DOpen}
+        onClose={() => setIs3DOpen(false)}
       />
     </div>
   );

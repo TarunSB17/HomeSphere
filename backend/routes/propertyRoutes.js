@@ -6,7 +6,8 @@ import {
   updateProperty,
   deleteProperty,
   getMyProperties,
-  getSimilarProperties
+  getSimilarProperties,
+  seedMyProperties
 } from '../controllers/propertyController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { isAdmin, canList } from '../middleware/roleMiddleware.js';
@@ -32,6 +33,7 @@ router.post(
   createProperty
 );
 
+router.post('/my/seed', protect, canList, seedMyProperties);
 router.get('/my/listings', protect, getMyProperties);
 router.put(
   '/:id',
@@ -43,6 +45,6 @@ router.put(
   ]),
   updateProperty
 );
-router.delete('/:id', protect, isAdmin, deleteProperty);
+router.delete('/:id', protect, deleteProperty);
 
 export default router;

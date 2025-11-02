@@ -282,8 +282,10 @@ export const deleteProperty = async (req, res) => {
       return res.status(404).json({ message: 'Property not found' });
     }
 
-    // Check if user is the owner
-    if (property.owner.toString() !== req.user._id.toString()) {
+    // Allow delete if admin or owner
+    const isOwner = property.owner.toString() === req.user._id.toString();
+    const isAdmin = req.user?.role === 'admin';
+    if (!isOwner && !isAdmin) {
       return res.status(401).json({ message: 'Not authorized' });
     }
 
@@ -303,5 +305,194 @@ export const getMyProperties = async (req, res) => {
     res.json(properties);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Seed 6 demo properties for current user
+// @route   POST /api/properties/my/seed
+// @access  Private (Seller/Admin)
+export const seedMyProperties = async (req, res) => {
+  try {
+    // Type-specific image pools for variety and relevance
+    const pools = {
+      villa: [
+        'https://images.unsplash.com/photo-1597047084897-51e81819a499?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1613977257593-9c0120ff9d2f?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=1200&h=800&fit=crop'
+      ],
+      apartment: [
+        'https://images.unsplash.com/photo-1494526585095-c41746248156?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1499955085172-a104c9463ece?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1501183638710-841dd1904471?w=1200&h=800&fit=crop'
+      ],
+      house: [
+        'https://images.unsplash.com/photo-1505691723518-36a5ac3b2d53?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1560185008-b033106af195?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1560448075-bb4caa6c8e0e?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1600585154154-1e47e6a6fcb9?w=1200&h=800&fit=crop'
+      ],
+      condo: [
+        'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1449844908441-8829872d2607?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=1200&h=800&fit=crop'
+      ],
+      commercial: [
+        'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1461713086041-1c3cf1d45084?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?w=1200&h=800&fit=crop'
+      ],
+      land: [
+        'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1469474968028-988cbb503d1b?w=1200&h=800&fit=crop',
+        'https://images.unsplash.com/photo-1495107334309-fcf20504a5ab?w=1200&h=800&fit=crop'
+      ]
+    };
+
+    const demoModels = [
+      'https://res.cloudinary.com/dpu6txhox/image/upload/v1762079555/apartnemt2_ueinwq.glb',
+      'https://res.cloudinary.com/dpu6txhox/image/upload/v1762079372/house2_o3dvos.glb',
+      'https://res.cloudinary.com/dpu6txhox/image/upload/v1762079372/house_1_mrvbpf.glb',
+      'https://res.cloudinary.com/dpu6txhox/image/upload/v1762079372/vilal_2_ss2zg3.glb',
+      'https://res.cloudinary.com/dpu6txhox/image/upload/v1762079372/villa1_xuzoha.glb',
+      'https://res.cloudinary.com/dpu6txhox/image/upload/v1762079372/Apartment_hjf7bn.glb'
+    ];
+
+    const propertiesSeed = [
+      // Villas (varied pricing)
+      {
+        title: 'Contemporary Villa with Pool - I',
+        description: 'Elegant 5BHK villa with private pool, landscaped garden, and premium clubhouse access.',
+        price: 32000000,
+        location: 'Whitefield, Bengaluru, Karnataka',
+        bedrooms: 5,
+        bathrooms: 5,
+        area: 4100,
+        propertyType: 'villa'
+      },
+      {
+        title: 'Contemporary Villa with Pool - II',
+        description: 'Stunning 5BHK villa featuring home automation, deck sit-out, and double-height living.',
+        price: 38000000,
+        location: 'Whitefield, Bengaluru, Karnataka',
+        bedrooms: 5,
+        bathrooms: 5,
+        area: 4200,
+        propertyType: 'villa'
+      },
+      {
+        title: 'Contemporary Villa with Pool - III',
+        description: 'Premium 5BHK villa with private courtyard, sky lounge, and spa room.',
+        price: 45000000,
+        location: 'Whitefield, Bengaluru, Karnataka',
+        bedrooms: 5,
+        bathrooms: 6,
+        area: 4500,
+        propertyType: 'villa'
+      },
+      // Apartment
+      {
+        title: 'Luxury Sea-Facing Apartment',
+        description: 'Premium 3BHK apartment with Arabian Sea views and modern amenities.',
+        price: 27000000,
+        location: 'Bandra West, Mumbai, Maharashtra',
+        bedrooms: 3,
+        bathrooms: 3,
+        area: 1650,
+        propertyType: 'apartment'
+      },
+      // Condo
+      {
+        title: 'Skyline View Condo',
+        description: 'High-rise condo with skyline views, concierge, and rooftop lounge.',
+        price: 22000000,
+        location: 'Hiranandani Gardens, Powai, Mumbai',
+        bedrooms: 2,
+        bathrooms: 2,
+        area: 1250,
+        propertyType: 'condo'
+      },
+      // Commercial
+      {
+        title: 'Grade-A Office Space',
+        description: 'Premium commercial office space with plug-and-play fitouts and ample parking.',
+        price: 60000000,
+        location: 'DLF Cybercity, Gurgaon, Haryana',
+        bedrooms: 0,
+        bathrooms: 2,
+        area: 6000,
+        propertyType: 'commercial'
+      },
+      // Land
+      {
+        title: 'Prime Residential Land Plot',
+        description: 'East-facing corner plot in a gated layout with 12m wide road access.',
+        price: 15000000,
+        location: 'Narsingi, Hyderabad, Telangana',
+        bedrooms: 0,
+        bathrooms: 0,
+        area: 3600,
+        propertyType: 'land'
+      }
+    ];
+
+    // Create up to 6 diverse properties for current user (avoid same type repetition)
+    const typeSeen = new Set();
+    const diverse = [];
+    for (const item of propertiesSeed) {
+      if (!typeSeen.has(item.propertyType)) {
+        typeSeen.add(item.propertyType);
+        diverse.push(item);
+      }
+      if (diverse.length >= 6) break;
+    }
+    while (diverse.length < 6) {
+      diverse.push(propertiesSeed[diverse.length % propertiesSeed.length]);
+    }
+
+    // Prepare docs with randomized, type-relevant images
+    const nowSeed = Date.now() % 7;
+    const docsToCreate = await Promise.all(
+      diverse.map(async (p, idx) => {
+        const pool = pools[p.propertyType] || pools.house;
+        const base = (idx * 2 + nowSeed) % pool.length;
+        const images = [
+          pool[base % pool.length],
+          pool[(base + 1) % pool.length],
+          pool[(base + 2) % pool.length],
+          pool[(base + 3) % pool.length],
+        ];
+
+        // Ensure unique title across DB by suffixing if needed
+        let title = p.title;
+        const exists = await Property.exists({ title });
+        if (exists) {
+          title = `${p.title} – ${new Date().getTime().toString().slice(-4)}`;
+        }
+
+        return {
+          ...p,
+          title,
+          images,
+          modelUrl: demoModels[idx % demoModels.length],
+          owner: req.user._id,
+          featured: idx < 6
+        };
+      })
+    );
+
+    const created = await Property.insertMany(docsToCreate);
+
+    // Return updated list
+    const properties = await Property.find({ owner: req.user._id }).sort({ createdAt: -1 });
+    return res.json(properties);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };

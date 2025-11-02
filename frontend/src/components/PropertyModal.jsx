@@ -13,12 +13,11 @@ const PropertyModal = ({ property, isOpen, onClose }) => {
   if (!isOpen || !property) return null;
 
   const formatPrice = (price) => {
-    if (price >= 1000000) {
-      return `$${(price / 1000000).toFixed(1)}M`;
-    } else if (price >= 1000) {
-      return `$${(price / 1000).toFixed(0)}K`;
+    try {
+      return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(price || 0);
+    } catch {
+      return `₹${(price || 0).toLocaleString('en-IN')}`;
     }
-    return `$${price.toLocaleString()}`;
   };
 
   const features = [
@@ -31,35 +30,35 @@ const PropertyModal = ({ property, isOpen, onClose }) => {
   ];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+      <div className="card max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex justify-between items-center p-6 border-b">
+        <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300 sticky top-0 bg-white dark:bg-gray-800 z-10">
           <div>
             <div className="text-2xl font-bold text-orange-500 mb-1">
               {formatPrice(property.price)}
             </div>
-            <div className="flex items-center text-gray-600">
+            <div className="flex items-center text-gray-600 dark:text-gray-400">
               <MapPin className="w-4 h-4 mr-1" />
               <span>{property.location}</span>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-1"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 transition-colors"
           >
             <X className="w-6 h-6" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b">
+        <div className="flex border-b border-gray-200 dark:border-gray-700 transition-colors">
           <button
             onClick={() => setActiveTab('details')}
             className={`px-6 py-3 font-medium ${
               activeTab === 'details'
                 ? 'text-blue-600 border-b-2 border-blue-600'
-                : 'text-gray-600 hover:text-gray-800'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
             }`}
           >
             Details
@@ -69,7 +68,7 @@ const PropertyModal = ({ property, isOpen, onClose }) => {
             className={`px-6 py-3 font-medium ${
               activeTab === 'images'
                 ? 'text-blue-600 border-b-2 border-blue-600'
-                : 'text-gray-600 hover:text-gray-800'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
             }`}
           >
             Images
@@ -98,31 +97,33 @@ const PropertyModal = ({ property, isOpen, onClose }) => {
 
               {/* Description */}
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Description</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {property.description || 
-                    'Breathtaking oceanfront estate with panoramic Pacific views. Features include infinity pool, private beach access, and state-of-the-art smart home technology.'}
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Description</h3>
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                  {property.description ||
+                    'Breathtaking oceanfront estate with panoramic views. Features include infinity pool, private beach access, and smart home technology throughout.'}
+                </p>
+                <p className="mt-3 text-gray-600 dark:text-gray-400 leading-relaxed">
+                  Additional highlights include premium fittings, dedicated parking, 24x7 security, and proximity to top schools, hospitals, and entertainment hubs.
                 </p>
               </div>
 
               {/* Features */}
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Features</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Features</h3>
                 <div className="grid grid-cols-2 gap-3">
                   {features.map((feature, index) => (
                     <div key={index} className="flex items-center">
                       <Check className="w-4 h-4 text-blue-600 mr-2" />
-                      <span className="text-gray-700">{feature}</span>
+                      <span className="text-gray-700 dark:text-gray-300">{feature}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* 3D Preview */}
-              <div className="bg-gray-50 rounded-lg p-8 text-center">
+              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-8 text-center transition-colors">
                 <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">3D Preview</h3>
-                <p className="text-gray-600 mb-4">Interactive 3D model viewer coming soon!</p>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">3D Preview</h3>
                 {property.modelUrl && (
                   <button
                     onClick={() => setIs3DModalOpen(true)}
@@ -132,7 +133,7 @@ const PropertyModal = ({ property, isOpen, onClose }) => {
                     Launch 3D Tour
                   </button>
                 )}
-                <div className="text-sm text-gray-500 mt-2">
+                <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                   Powered by Cloudinary
                 </div>
               </div>
@@ -140,14 +141,58 @@ const PropertyModal = ({ property, isOpen, onClose }) => {
           ) : (
             /* Image Gallery */
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">{property.title}</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">{property.title}</h3>
               <div className="grid grid-cols-2 gap-4">
-                {/* Show multiple images or repeat the same image */}
-                {[1, 2, 3, 4].map((index) => (
-                  <div key={index} className="aspect-video rounded-lg overflow-hidden">
+                {(() => {
+                  const fallbacksByType = {
+                    villa: [
+                      'https://images.unsplash.com/photo-1613977257593-9c0120ff9d2f?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=800&h=600&fit=crop',
+                    ],
+                    apartment: [
+                      'https://images.unsplash.com/photo-1494526585095-c41746248156?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1499955085172-a104c9463ece?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1501183638710-841dd1904471?w=800&h=600&fit=crop',
+                    ],
+                    condo: [
+                      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1599423300746-b62533397364?w=800&h=600&fit=crop',
+                    ],
+                    commercial: [
+                      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1461713086041-1c3cf1d45084?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?w=800&h=600&fit=crop',
+                    ],
+                    land: [
+                      'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1495107334309-fcf20504a5ab?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1521334726092-b509a19597a8?w=800&h=600&fit=crop',
+                    ],
+                    house: [
+                      'https://images.unsplash.com/photo-1505691723518-36a5ac3b2d53?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1560448075-bb4caa6c8e0e?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1600585154154-1e47e6a6fcb9?w=800&h=600&fit=crop',
+                      'https://images.unsplash.com/photo-1560185008-b033106af195?w=800&h=600&fit=crop',
+                    ],
+                  };
+                  const type = (property.propertyType || 'house').toString().toLowerCase();
+                  const pool = fallbacksByType[type] || fallbacksByType.house;
+                  const valid = (property.images || []).filter(Boolean);
+                  const need = 4 - valid.length;
+                  const fill = Array.from({ length: Math.max(need, 0) }, (_, i) => pool[i % pool.length]);
+                  return [...valid.slice(0, 4), ...fill].slice(0, 4);
+                })().map((img, idx) => (
+                  <div key={idx} className="aspect-video rounded-lg overflow-hidden">
                     <img
-                      src={property.images?.[0] || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500&h=300&fit=crop'}
-                      alt={`${property.title} - Image ${index}`}
+                      src={typeof img === 'string' ? img : ''}
+                      alt={`${property.title} - Image ${idx + 1}`}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -155,11 +200,11 @@ const PropertyModal = ({ property, isOpen, onClose }) => {
               </div>
               
               {/* Price and Location in Images Tab */}
-              <div className="mt-6 pt-4 border-t">
+              <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 transition-colors">
                 <div className="text-2xl font-bold text-orange-500 mb-2">
                   {formatPrice(property.price)}
                 </div>
-                <div className="flex items-center text-gray-600">
+                <div className="flex items-center text-gray-600 dark:text-gray-400">
                   <MapPin className="w-4 h-4 mr-1" />
                   <span>{property.location}</span>
                 </div>
@@ -188,15 +233,6 @@ const PropertyModal = ({ property, isOpen, onClose }) => {
               </button>
             );
           })()}
-          <button
-            onClick={() => {
-              navigate(`/properties/${property._id}`);
-              onClose();
-            }}
-            className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
-          >
-            View Details
-          </button>
         </div>
       </div>
 

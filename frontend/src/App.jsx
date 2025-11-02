@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './context/AuthContext';
@@ -16,6 +16,7 @@ import Landing from './pages/Landing';
 import PropertyDetail from './pages/PropertyDetail';
 import ProtectedRoute from './components/ProtectedRoute';
 import About from './pages/About';
+import Contact from './pages/Contact';
 
 function App() {
   return (
@@ -26,7 +27,8 @@ function App() {
             <div className="min-h-screen bg-background-light dark:bg-background-dark transition-colors duration-300">
               <Navbar />
               <Routes>
-                <Route path="/" element={<Landing />} />
+                <Route path="/" element={<Login />} />
+                <Route path="/home" element={<Landing />} />
                 <Route
                   path="/properties"
                   element={
@@ -88,6 +90,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <About />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/contact"
+                  element={
+                    <ProtectedRoute>
+                      <Contact />
                     </ProtectedRoute>
                   }
                 />
