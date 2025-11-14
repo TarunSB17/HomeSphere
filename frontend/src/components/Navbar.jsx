@@ -1,13 +1,14 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { AuthContext } from '../context/AuthContext';
 import DarkModeToggle from './DarkModeToggle';
-import { Home, PlusCircle, LogOut, User, LogIn, Heart, BarChart3 } from 'lucide-react';
+import { Home, PlusCircle, LogOut, User, LogIn, Heart, BarChart3, Menu, X } from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -33,7 +34,7 @@ const Navbar = () => {
           </Link>
 
           {/* Navigation Links */}
-          <div className="flex items-center space-x-2">
+          <div className="hidden md:flex items-center space-x-2">
             {user && (
               <>
                 {/* Main nav simplified for sellers */}
@@ -139,8 +140,74 @@ const Navbar = () => {
               </>
             )}
           </div>
+
+          {/* Mobile menu toggle */}
+          <button
+            className="md:hidden inline-flex items-center justify-center p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+            onClick={() => setMobileOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile panel */}
+      {mobileOpen && (
+        <div className="md:hidden border-t border-white/20 dark:border-gray-800/20 bg-white/80 dark:bg-gray-900/80 backdrop-blur">
+          <div className="px-4 pt-2 pb-4 space-y-2">
+            {user && (
+              <div className="grid grid-cols-2 gap-2">
+                <Link to="/home" onClick={() => setMobileOpen(false)} className="btn-ghost">Home</Link>
+                <Link to="/properties" onClick={() => setMobileOpen(false)} className="btn-ghost">Properties</Link>
+                <Link to="/about" onClick={() => setMobileOpen(false)} className="btn-ghost">About</Link>
+                <Link to="/contact" onClick={() => setMobileOpen(false)} className="btn-ghost">Contact</Link>
+              </div>
+            )}
+
+            {user ? (
+              <div className="grid grid-cols-1 gap-2 mt-2">
+                {user.role === 'admin' || user.role === 'seller' ? (
+                  <>
+                    <Link to="/my-properties" onClick={() => setMobileOpen(false)} className="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200">
+                      <User className="w-4 h-4 mr-2" /> My Properties
+                    </Link>
+                    <Link to="/add-property" onClick={() => setMobileOpen(false)} className="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg bg-gradient-primary text-white">
+                      <PlusCircle className="w-4 h-4 mr-2" /> Add Property
+                    </Link>
+                  </>
+                ) : (
+                  <Link to="/favorites" onClick={() => setMobileOpen(false)} className="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200">
+                    <Heart className="w-4 h-4 mr-2" /> My Favorites
+                  </Link>
+                )}
+
+                <div className="flex items-center justify-between mt-2">
+                  <DarkModeToggle />
+                  <button
+                    onClick={() => { setMobileOpen(false); handleLogout(); }}
+                    className="inline-flex items-center justify-center px-4 py-2 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" /> Logout
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-2 mt-2">
+                <div className="flex items-center justify-between">
+                  <DarkModeToggle />
+                </div>
+                <Link to="/login" onClick={() => setMobileOpen(false)} className="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200">
+                  <LogIn className="w-4 h-4 mr-2" /> Login
+                </Link>
+                <Link to="/register" onClick={() => setMobileOpen(false)} className="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg bg-gradient-primary text-white">
+                  Sign Up
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

@@ -7,16 +7,18 @@ import {
   deleteProperty,
   getMyProperties,
   getSimilarProperties,
-  seedMyProperties
+  seedMyProperties,
+  getModelFile
 } from '../controllers/propertyController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { isAdmin, canList } from '../middleware/roleMiddleware.js';
-import { uploadImages } from '../config/localStorage.js';
+import { uploadImages, uploadModelMemory } from '../config/cloudinary.js';
 
 const router = express.Router();
 
-// Public routes
+// Public routes (order matters: specific before dynamic)
 router.get('/', getProperties);
+router.get('/model/:id', getModelFile);
 router.get('/:id', getPropertyById);
 router.get('/:id/similar', getSimilarProperties);
 
@@ -25,11 +27,8 @@ router.post(
   '/',
   protect,
   canList,
-  // Handle both images and model in one multer middleware
-  uploadImages.fields([
-    { name: 'images', maxCount: 10 },
-    { name: 'model', maxCount: 1 }
-  ]),
+  uploadImages.fields([{ name: 'images', maxCount: 10 }]),
+  uploadModelMemory.single('model'),
   createProperty
 );
 
@@ -39,10 +38,8 @@ router.put(
   '/:id',
   protect,
   canList,
-  uploadImages.fields([
-    { name: 'newImages', maxCount: 10 },
-    { name: 'newModel', maxCount: 1 }
-  ]),
+  uploadImages.fields([{ name: 'newImages', maxCount: 10 }]),
+  uploadModelMemory.single('newModel'),
   updateProperty
 );
 router.delete('/:id', protect, deleteProperty);

@@ -108,7 +108,7 @@ function App() {
               <Toaster 
                 position="top-right"
                 toastOptions={{
-                  className: 'backdrop-blur-lg bg-white/90 dark:bg-gray-800/90',
+                  className: 'backdrop-blur-lg bg-white/90 dark:bg-gray-800/90 text-gray-900 dark:text-white',
                   style: {
                     borderRadius: '12px',
                   },

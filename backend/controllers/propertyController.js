@@ -1,4 +1,6 @@
 import Property from '../models/Property.js';
+import mongoose from 'mongoose';
+import { Readable } from 'stream';
 
 // @desc    Get all properties
 // @route   GET /api/properties
@@ -112,29 +114,29 @@ export const createProperty = async (req, res) => {
       });
     }
 
-    // Get uploaded image URLs from local storage
+    // Get uploaded image URLs from Cloudinary (multer-storage-cloudinary provides .path URL)
     // Using uploadImages.fields() - req.files is an object with field names as keys
     let images = [];
     if (req.files && req.files['images']) {
-      // Convert local file paths to URLs
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
-      images = req.files['images'].map(file => {
-        // file.path is like: backend/uploads/images/img-123.jpg
-        // Convert to: /uploads/images/img-123.jpg
-        const relativePath = file.path.replace(/\\/g, '/').split('uploads/')[1];
-        return `${baseUrl}/uploads/${relativePath}`;
-      });
+      images = req.files['images'].map(file => file.path);
     }
     
-    // Handle 3D model - store on disk like images
+    // Handle 3D model - store to Mongo GridFS
     let modelUrl = null;
-    if (req.files && req.files['model'] && req.files['model'][0]) {
-      const file = req.files['model'][0];
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
-      // file.path is like: backend/uploads/models/model-123.glb
-      const relativePath = file.path.replace(/\\/g, '/').split('uploads/')[1];
-      modelUrl = `${baseUrl}/uploads/${relativePath}`;
-      console.log(`Model stored at: ${modelUrl}`);
+    if (req.file && req.file.fieldname === 'model') {
+      const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, { bucketName: 'models' });
+      const filename = req.file.originalname || `model_${Date.now()}.glb`;
+      const contentType = req.file.mimetype || 'application/octet-stream';
+      const uploadStream = bucket.openUploadStream(filename, { contentType });
+      const readable = Readable.from(req.file.buffer);
+      await new Promise((resolve, reject) => {
+        readable.pipe(uploadStream)
+          .on('error', reject)
+          .on('finish', resolve);
+      });
+      const fileId = uploadStream.id.toString();
+      modelUrl = `/api/properties/model/${fileId}`;
+      console.log(`Model stored in GridFS: ${fileId}`);
     }
 
     if (images.length === 0) {
@@ -168,6 +170,7 @@ export const createProperty = async (req, res) => {
 
     console.log('Property created successfully:', property._id, 'images:', property.images?.length, 'hasModel:', !!property.modelUrl);
     console.log('----- CREATE PROPERTY END -----');
+    return res.status(201).json(property);
   } catch (error) {
     console.error('Create property error:', error?.message);
     if (error?.stack) console.error(error.stack);
@@ -208,13 +211,9 @@ export const updateProperty = async (req, res) => {
       property.images = property.images.filter(img => !toDelete.includes(img));
     }
 
-    // Handle new images
+    // Handle new images (Cloudinary URLs already in file.path)
     if (req.files && req.files['newImages']) {
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
-      const newImageUrls = req.files['newImages'].map(file => {
-        const relativePath = file.path.replace(/\\/g, '/').split('uploads/')[1];
-        return `${baseUrl}/uploads/${relativePath}`;
-      });
+      const newImageUrls = req.files['newImages'].map(file => file.path);
       property.images = [...property.images, ...newImageUrls];
     }
 
@@ -223,14 +222,21 @@ export const updateProperty = async (req, res) => {
       property.modelUrl = null;
     }
 
-    // Handle new model - store on disk
-    if (req.files && req.files['newModel'] && req.files['newModel'][0]) {
-      const file = req.files['newModel'][0];
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
-      const relativePath = file.path.replace(/\\/g, '/').split('uploads/')[1];
-      property.modelUrl = `${baseUrl}/uploads/${relativePath}`;
-      
-      console.log(`New model uploaded: ${property.modelUrl}`);
+    // Handle new model via GridFS
+    if (req.file && req.file.fieldname === 'newModel') {
+      const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, { bucketName: 'models' });
+      const filename = req.file.originalname || `model_${Date.now()}.glb`;
+      const contentType = req.file.mimetype || 'application/octet-stream';
+      const uploadStream = bucket.openUploadStream(filename, { contentType });
+      const readable = Readable.from(req.file.buffer);
+      await new Promise((resolve, reject) => {
+        readable.pipe(uploadStream)
+          .on('error', reject)
+          .on('finish', resolve);
+      });
+      const fileId = uploadStream.id.toString();
+      property.modelUrl = `/api/properties/model/${fileId}`;
+      console.log(`New model uploaded to GridFS: ${fileId}`);
     }
 
     await property.save();
@@ -238,6 +244,32 @@ export const updateProperty = async (req, res) => {
   } catch (error) {
     console.error('Update property error:', error);
     res.status(500).json({ message: error.message });
+  }
+};
+
+export const getModelFile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, { bucketName: 'models' });
+    const _id = new mongoose.Types.ObjectId(id);
+    // Try to find file to get contentType
+    const files = await mongoose.connection.db.collection('models.files').find({ _id }).toArray();
+    if (!files || files.length === 0) {
+      return res.status(404).json({ message: 'Model not found' });
+    }
+    const file = files[0];
+    if (file.contentType) {
+      res.set('Content-Type', file.contentType);
+    }
+    const downloadStream = bucket.openDownloadStream(_id);
+    downloadStream.on('error', (err) => {
+      console.error('GridFS download error:', err);
+      res.status(500).end();
+    });
+    downloadStream.pipe(res);
+  } catch (err) {
+    console.error('getModelFile error:', err);
+    res.status(500).json({ message: err.message });
   }
 };
 

@@ -23,16 +23,9 @@ const imageStorage = new CloudinaryStorage({
   }
 });
 
-// Storage for 3D models (GLB/GLTF files)
-const modelStorage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'homesphere/models',
-    allowed_formats: ['glb', 'gltf'],
-    resource_type: 'raw'
-  }
-});
+// For 3D models we will store in MongoDB GridFS, so use memory storage
+const memoryStorage = multer.memoryStorage();
 
 export const uploadImages = multer({ storage: imageStorage });
-export const uploadModel = multer({ storage: modelStorage });
+export const uploadModelMemory = multer({ storage: memoryStorage, limits: { fileSize: 50 * 1024 * 1024 } });
 export { cloudinary };

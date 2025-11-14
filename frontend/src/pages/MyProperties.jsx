@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import axios from '../utils/axios';
 import toast from 'react-hot-toast';
@@ -10,6 +10,7 @@ import Model3DModal from '../components/Model3DModal';
 const MyProperties = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState(null);
@@ -24,7 +25,8 @@ const MyProperties = () => {
       return;
     }
     fetchMyProperties();
-  }, [user, navigate]);
+    // re-fetch when query changes (e.g., after adding property with ?refresh=1)
+  }, [user, navigate, location.search]);
 
   const fetchMyProperties = async () => {
     try {

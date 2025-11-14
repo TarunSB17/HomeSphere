@@ -15,6 +15,8 @@ import propertyRoutes from './routes/propertyRoutes.js';
 import inquiryRoutes from './routes/inquiryRoutes.js';
 import favoriteRoutes from './routes/favoriteRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import contactRoutes from './routes/contactRoutes.js';
+import agentRoutes from './routes/agentRoutes.js';
  
 
 // Load env vars
@@ -68,6 +70,8 @@ app.use('/api/properties', propertyRoutes);
 app.use('/api/inquiry', inquiryRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api/agent', agentRoutes);
  
 
 // Error handling middleware

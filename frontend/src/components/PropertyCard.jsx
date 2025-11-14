@@ -117,12 +117,12 @@ const PropertyCard = ({ property, onViewDetails, onView3D, onDelete, onEdit }) =
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-1 flex-wrap md:flex-nowrap items-stretch">
           <motion.button
             onClick={() => onViewDetails(property)}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="flex-1 sm:flex-none w-full sm:w-auto py-3 px-4 bg-gradient-primary text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300"
+            className="flex-1 sm:flex-none w-full sm:w-auto py-2 px-2 bg-gradient-primary text-white rounded-lg font-medium text-sm whitespace-nowrap shadow-md hover:shadow-lg transition-all duration-300"
           >
             View Details
           </motion.button>
@@ -132,7 +132,7 @@ const PropertyCard = ({ property, onViewDetails, onView3D, onDelete, onEdit }) =
               onClick={() => (onView3D ? onView3D(property) : onViewDetails(property))}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full sm:w-auto py-3 px-4 bg-accent-500 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+              className="w-full sm:w-auto py-2 px-2 bg-accent-500 text-white rounded-lg font-medium text-sm whitespace-nowrap shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
             >
               <Box className="w-4 h-4" />
               <span className="hidden sm:inline">View 3D</span>
@@ -144,7 +144,7 @@ const PropertyCard = ({ property, onViewDetails, onView3D, onDelete, onEdit }) =
               onClick={() => onEdit(property)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full sm:w-auto py-3 px-4 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-100 rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+              className="w-full sm:w-auto py-2 px-2 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-100 rounded-lg font-medium text-sm whitespace-nowrap shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
               title="Edit property"
             >
               <Edit2 className="w-4 h-4" />
@@ -157,7 +157,7 @@ const PropertyCard = ({ property, onViewDetails, onView3D, onDelete, onEdit }) =
               onClick={() => onDelete(property)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full sm:w-auto py-3 px-4 bg-red-600 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+              className="w-full sm:w-auto py-2 px-2 bg-red-600 text-white rounded-lg font-medium text-sm whitespace-nowrap shadow-md hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
               title="Delete property"
             >
               <Trash2 className="w-4 h-4" />

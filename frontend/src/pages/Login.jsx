@@ -43,7 +43,7 @@ const Login = () => {
           <LogIn className="mx-auto h-12 w-12 text-primary-600" />
           <h2 className="mt-4 text-3xl font-bold text-gray-900 dark:text-gray-100">Welcome Back</h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Sign in to access your account
+            Login to access your account
           </p>
         </div>
 
@@ -85,7 +85,7 @@ const Login = () => {
             disabled={loading}
             className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? 'Logging In...' : 'Login'}
           </button>
         </form>
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import axios from '../utils/axios';
 import Model3DViewer from '../components/Model3DViewer';
@@ -15,6 +15,7 @@ const PropertyDetail = () => {
   const { id } = useParams();
   const locationRouter = useLocation();
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -113,6 +114,7 @@ const PropertyDetail = () => {
   const ownerId = property?.owner?._id || property?.owner;
   const isOwner = !!(user && ownerId && ownerId.toString() === user._id);
   const isSeller = user?.role === 'seller';
+  const isBuyer = user?.role === 'buyer';
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 py-8">
@@ -279,15 +281,26 @@ const PropertyDetail = () => {
                 <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-900/30 rounded-lg p-3">
                   <p className="text-primary-700 dark:text-primary-300 text-center font-medium">This is your property listing</p>
                 </div>
-              ) : (!isSeller && !showInquiryForm) ? (
+              ) : (isBuyer && !showInquiryForm) ? (
                 <button
-                  onClick={() => setShowInquiryForm(true)}
+                  onClick={() => {
+                    if (!user) {
+                      navigate('/login', { state: { from: { pathname: `/properties/${id}`, search: '?inquire=1' } } });
+                      return;
+                    }
+                    setInquiryData((prev) => ({
+                      ...prev,
+                      name: prev.name || user?.name || '',
+                      email: prev.email || user?.email || ''
+                    }));
+                    setShowInquiryForm(true);
+                  }}
                   className="w-full btn-primary bg-primary-600 hover:bg-primary-700 flex items-center justify-center space-x-2 py-2 text-sm"
                 >
                   <MessageSquare className="w-4 h-4" />
                   <span>I'm Interested</span>
                 </button>
-              ) : (!isSeller && (
+              ) : (isBuyer && (
                 <form onSubmit={handleInquirySubmit} className="space-y-3 text-sm">
                   <div>
                     <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Your Name</label>

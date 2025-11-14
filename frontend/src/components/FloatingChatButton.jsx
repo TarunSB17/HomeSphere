@@ -1,17 +1,31 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send } from 'lucide-react';
+import axios from '../utils/axios';
 
 const FloatingChatButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([
+    { role: 'agent', text: "Hi! I'm here to help you find your dream home. What are you looking for?", time: 'Just now' }
+  ]);
+  const [sending, setSending] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (message.trim()) {
-      // TODO: Implement chat functionality
-      console.log('Message sent:', message);
-      setMessage('');
+    const text = message.trim();
+    if (!text || sending) return;
+    setMessage('');
+    setMessages((prev) => [...prev, { role: 'user', text, time: 'Just now' }]);
+    try {
+      setSending(true);
+      const { data } = await axios.post('/agent/chat', { message: text });
+      const reply = data?.reply || 'Sorry, I had trouble responding.';
+      setMessages((prev) => [...prev, { role: 'agent', text: reply, time: 'Just now' }]);
+    } catch (err) {
+      setMessages((prev) => [...prev, { role: 'agent', text: 'Network error. Please try again.', time: 'Just now' }]);
+    } finally {
+      setSending(false);
     }
   };
 
@@ -49,17 +63,19 @@ const FloatingChatButton = () => {
 
               {/* Messages */}
               <div className="h-64 overflow-y-auto p-4 space-y-3">
-                <div className="flex items-start space-x-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center flex-shrink-0">
-                    <span className="text-white text-xs font-bold">A</span>
+                {messages.map((m, idx) => (
+                  <div key={idx} className={`flex items-start space-x-2 ${m.role === 'user' ? 'justify-end' : ''}`}>
+                    {m.role === 'agent' && (
+                      <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center flex-shrink-0">
+                        <span className="text-white text-xs font-bold">A</span>
+                      </div>
+                    )}
+                    <div className={`${m.role === 'agent' ? 'bg-gray-100 dark:bg-gray-700 rounded-2xl rounded-tl-none' : 'bg-primary-600 text-white rounded-2xl rounded-tr-none'} px-4 py-2 max-w-[70%]`}>
+                      <p className={`text-sm ${m.role === 'agent' ? 'text-gray-700 dark:text-gray-200' : 'text-white'}`}>{m.text}</p>
+                      <span className={`text-xs ${m.role === 'agent' ? 'text-gray-500 dark:text-gray-400' : 'text-white/80'}`}>{m.time}</span>
+                    </div>
                   </div>
-                  <div className="bg-gray-100 dark:bg-gray-700 rounded-2xl rounded-tl-none px-4 py-2 max-w-[70%]">
-                    <p className="text-sm text-gray-700 dark:text-gray-200">
-                      Hi! I'm here to help you find your dream home. What are you looking for?
-                    </p>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">Just now</span>
-                  </div>
-                </div>
+                ))}
               </div>
 
               {/* Input */}
@@ -74,7 +90,7 @@ const FloatingChatButton = () => {
                   />
                   <button
                     type="submit"
-                    disabled={!message.trim()}
+                    disabled={!message.trim() || sending}
                     className="w-10 h-10 rounded-xl bg-gradient-primary text-white flex items-center justify-center hover:shadow-lg transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   >
                     <Send className="w-5 h-5" />

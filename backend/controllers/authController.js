@@ -8,6 +8,10 @@ const generateToken = (id) => {
   });
 };
 
+// Single allowed admin credentials
+const ADMIN_EMAIL = 'tarunsb2005@gmail.com';
+const ADMIN_PASSWORD = 'Tarun@2005';
+
 // @desc    Register new user
 // @route   POST /api/auth/register
 // @access  Public
@@ -22,12 +26,24 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    // Determine final role: only specific credentials can become admin
+    let finalRole = role || 'buyer';
+    if (email === ADMIN_EMAIL) {
+      if (password !== ADMIN_PASSWORD) {
+        return res.status(400).json({ message: 'Invalid admin credentials' });
+      }
+      finalRole = 'admin';
+    } else if (role === 'admin') {
+      // Coerce any other attempted admin signups to buyer
+      finalRole = 'buyer';
+    }
+
     // Create user
     const user = await User.create({
       name,
       email,
       password,
-      role: role || 'buyer',
+      role: finalRole,
       phone
     });
 

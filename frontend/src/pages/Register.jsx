@@ -30,8 +30,10 @@ const Register = () => {
       return;
     }
 
-    if (formData.password.length < 6) {
-      toast.error('Password must be at least 6 characters');
+    // Password policy: min 8 chars, at least one uppercase and one special character
+    const strongPw = /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/;
+    if (!strongPw.test(formData.password)) {
+      toast.error('Password must be 8+ chars, include 1 uppercase and 1 special character');
       return;
     }
 
@@ -123,7 +125,6 @@ const Register = () => {
               >
                 <option value="buyer">Buyer - Looking for properties</option>
                 <option value="seller">Seller - Listing properties</option>
-                <option value="admin">Admin</option>
               </select>
             </div>
 
@@ -141,6 +142,7 @@ const Register = () => {
                 className="input-field"
                 placeholder="••••••••"
               />
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Min 8 chars, include 1 uppercase and 1 special character.</p>
             </div>
 
             <div>

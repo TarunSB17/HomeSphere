@@ -99,7 +99,7 @@ const AddProperty = () => {
       });
 
       toast.success('Property added successfully!');
-      navigate('/my-properties');
+      navigate('/my-properties?refresh=1');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to add property');
       console.error(error);
